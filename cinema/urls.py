@@ -1,35 +1,64 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import (
-    GenreListCreateAPIView, GenreRetrieveUpdateDestroyAPIView,
-    ActorListCreateAPIView, ActorRetrieveUpdateDestroyAPIView,
-    CinemaHallViewSet, MovieViewSet
+from cinema.views import (
+    MovieViewSet,
+    CinemaHallViewSet
+)
+from rest_framework import routers
+from cinema.views import (
+    GenreList,
+    GenreDetail,
+    ActorList,
+    ActorDetail
 )
 
-router = DefaultRouter()
-router.register(r"movies", MovieViewSet)
-router.register(r"cinema_halls", CinemaHallViewSet)
+app_name = "cinema"
+
+router = routers.DefaultRouter()
+router.register("movies", MovieViewSet)
+
+cinema_halls = CinemaHallViewSet.as_view(
+    actions={
+        "get": "list",
+        "post": "create"
+    }
+)
+cinema_halls_detail = CinemaHallViewSet.as_view(
+    actions={
+        "get": "retrieve",
+        "patch": "partial_update",
+        "put": "update",
+        "delete": "destroy"
+    }
+)
 
 urlpatterns = [
+    path("", include(router.urls)),
+    path("cinema_halls/",
+         cinema_halls,
+         name="cinema_halls"
+         ),
     path(
-        "api/cinema/genres/",
-        GenreListCreateAPIView.as_view(),
-        name="genre-list-create"
+        "cinema_halls/<int:pk>/",
+        cinema_halls_detail,
+        name="cinema_halls-detail"
     ),
     path(
-        "api/cinema/genres/<int:pk>/",
-        GenreRetrieveUpdateDestroyAPIView.as_view(),
+        "genres/",
+        GenreList.as_view(),
+        name="genre-list"),
+    path(
+        "genres/<int:pk>/",
+        GenreDetail.as_view(),
         name="genre-detail"
     ),
     path(
-        "api/cinema/actors/",
-        ActorListCreateAPIView.as_view(),
-        name="actor-list-create"
+        "actors/",
+        ActorList.as_view(),
+        name="actor-list"
     ),
     path(
-        "api/cinema/actors/<int:pk>/",
-        ActorRetrieveUpdateDestroyAPIView.as_view(),
+        "actors/<int:pk>/",
+        ActorDetail.as_view(),
         name="actor-detail"
     ),
-    path("api/", include(router.urls)),
 ]
