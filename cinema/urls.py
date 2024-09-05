@@ -1,48 +1,35 @@
-from django.urls import path
-from django.urls.conf import include
-from rest_framework import routers
-
-from cinema.views import (
-    CinemaHallViewSet,
-    MovieViewSet,
-    GenreList,
-    GenreDetail,
-    ActorList,
-    ActorDetail
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import (
+    GenreListCreateAPIView, GenreRetrieveUpdateDestroyAPIView,
+    ActorListCreateAPIView, ActorRetrieveUpdateDestroyAPIView,
+    CinemaHallViewSet, MovieViewSet
 )
 
-cinema_hall_list = CinemaHallViewSet.as_view(
-    actions={
-        "get": "list",
-        "post": "create",
-    }
-)
-
-cinema_hall_detail = CinemaHallViewSet.as_view(
-    actions={
-        "get": "retrieve",
-        "put": "update",
-        "patch": "partial_update",
-        "delete": "destroy",
-    }
-)
-
-
-movie_router = routers.DefaultRouter()
-movie_router.register("movies", MovieViewSet)
+router = DefaultRouter()
+router.register(r"movies", MovieViewSet)
+router.register(r"cinema_halls", CinemaHallViewSet)
 
 urlpatterns = [
-    path("genres/", GenreList.as_view(), name="genre-list"),
-    path("genres/<int:pk>", GenreDetail.as_view(), name="genre-detail"),
-    path("actors/", ActorList.as_view(), name="actor-list"),
-    path("actors/<int:pk>", ActorDetail.as_view(), name="actor-detail"),
-    path("cinema_halls/", cinema_hall_list, name="cinema-hall-list"),
     path(
-        "cinema_halls/<int:pk>/",
-        cinema_hall_detail,
-        name="cinema-hall-detail"
+        "api/cinema/genres/",
+        GenreListCreateAPIView.as_view(),
+        name="genre-list-create"
     ),
-    path("", include(movie_router.urls)),
+    path(
+        "api/cinema/genres/<int:pk>/",
+        GenreRetrieveUpdateDestroyAPIView.as_view(),
+        name="genre-detail"
+    ),
+    path(
+        "api/cinema/actors/",
+        ActorListCreateAPIView.as_view(),
+        name="actor-list-create"
+    ),
+    path(
+        "api/cinema/actors/<int:pk>/",
+        ActorRetrieveUpdateDestroyAPIView.as_view(),
+        name="actor-detail"
+    ),
+    path("api/", include(router.urls)),
 ]
-
-app_name = "cinema"
