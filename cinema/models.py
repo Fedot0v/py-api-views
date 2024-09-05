@@ -31,11 +31,6 @@ class CinemaHall(models.Model):
     name = models.CharField(max_length=255)
     rows = models.IntegerField()
     seats_in_row = models.IntegerField()
-    movie = models.ForeignKey(
-        Movie,
-        on_delete=models.CASCADE,
-        related_name="cinema_halls"
-    )
 
     def __str__(self):
         return f"{self.name} hall"
