@@ -25,7 +25,7 @@ class GenreList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GenreRetrieveUpdateDestroyAPIView(APIView):
+class GenreDetail(APIView):
     def get_object(self, pk):
         return get_object_or_404(Genre, pk=pk)
 
@@ -56,12 +56,12 @@ class GenreRetrieveUpdateDestroyAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ActorListCreateAPIView(generics.ListCreateAPIView):
+class ActorList(generics.ListCreateAPIView):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
 
 
-class ActorRetrieveUpdateDestroyAPIView(
+class ActorDetail(
     generics.RetrieveUpdateDestroyAPIView
 ):
     queryset = Actor.objects.all()
