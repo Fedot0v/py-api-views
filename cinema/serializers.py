@@ -33,13 +33,10 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class CinemaHallSerializer(serializers.ModelSerializer):
-    movie = serializers.PrimaryKeyRelatedField(
-        queryset=Movie.objects.all(),
-    )
 
     class Meta:
         model = CinemaHall
-        fields = ["id", "name", "movie"]
+        fields = ["id", "name"]
 
 
 class ActorSerializer(serializers.ModelSerializer):
